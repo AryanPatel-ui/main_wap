@@ -126,7 +126,7 @@ const Icon = {
 };
 
 /* ── Data ── */
-const PROJECTS = [
+const MY_WORK_PROJECTS = [
   {
     id: 1,
     title: "E-Commerce Redesign",
@@ -160,6 +160,52 @@ const PROJECTS = [
     status: "review",
     yield: "+₹655.70",
   },
+  {
+    id: 4,
+    title: "SaaS Landing Page",
+    client: "Orbit Stack",
+    escrow: "₹2,07,500",
+    due: "Apr 18",
+    progress: 100,
+    milestone: "Project Completed",
+    status: "completed",
+    yield: "+₹1,120.00",
+  },
+];
+
+const EXPLORE_PROJECTS = [
+  {
+    id: 101,
+    title: "Fintech Mobile App UI",
+    client: "RupeeFlow",
+    budget: "₹4,80,000",
+    duration: "6 weeks",
+    skills: "Figma · Design System · Mobile UI",
+  },
+  {
+    id: 102,
+    title: "React Admin Dashboard",
+    client: "CloudMint",
+    budget: "₹3,20,000",
+    duration: "4 weeks",
+    skills: "React · Charts · API Integration",
+  },
+  {
+    id: 103,
+    title: "Brand Identity Package",
+    client: "Studio Bloom",
+    budget: "₹1,75,000",
+    duration: "3 weeks",
+    skills: "Logo · Typography · Brand Guide",
+  },
+  {
+    id: 104,
+    title: "E-commerce Checkout Revamp",
+    client: "CartNest",
+    budget: "₹2,90,000",
+    duration: "5 weeks",
+    skills: "UX Audit · Prototyping · Conversion",
+  },
 ];
 
 const MILESTONES = [
@@ -170,7 +216,8 @@ const MILESTONES = [
 ];
 
 const NAV = [
-  { icon: Icon.briefcase, label: "Projects" },
+  { icon: Icon.search, label: "Explore", id: "explore" },
+  { icon: Icon.briefcase, label: "My Work", id: "mywork" },
   { icon: Icon.dollar, label: "Earnings" },
   { icon: Icon.shield, label: "Escrow" },
   { icon: Icon.award, label: "Profile" },
@@ -277,8 +324,8 @@ function StatCard({ icon, label, value, sub, color = "blue", delay = 0 }) {
 function ProjectCard({ p, delay }) {
   const [hov, setHov] = useState(false);
   const [submitHov, setSubmitHov] = useState(false);
-  const statusColor = p.status === "review" ? "amber" : "blue";
-  const statusLabel = p.status === "review" ? "In Review" : "Active";
+  const statusColor = p.status === "review" ? "amber" : p.status === "completed" ? "green" : "blue";
+  const statusLabel = p.status === "review" ? "In Review" : p.status === "completed" ? "Completed" : "Ongoing";
 
   return (
     <div
@@ -323,7 +370,7 @@ function ProjectCard({ p, delay }) {
             {p.progress}%
           </span>
         </div>
-        <ProgressBar value={p.progress} color={p.status === "review" ? G.amber : G.blue} />
+        <ProgressBar value={p.progress} color={p.status === "review" ? G.amber : p.status === "completed" ? G.green : G.blue} />
       </div>
 
       {/* Escrow row */}
@@ -355,7 +402,7 @@ function ProjectCard({ p, delay }) {
         <span style={{ fontSize: 11.5, color: G.text2 }}>
           <span style={{ color: G.text3 }}>Due: </span>{p.due}
         </span>
-        <button
+        {p.status !== "completed" && <button
           onMouseEnter={() => setSubmitHov(true)}
           onMouseLeave={() => setSubmitHov(false)}
           style={{
@@ -371,8 +418,76 @@ function ProjectCard({ p, delay }) {
           }}
         >
           {Icon.upload} Submit Work
-        </button>
+        </button>}
       </div>
+    </div>
+  );
+}
+
+function ExploreProjectCard({ p, delay }) {
+  const [hov, setHov] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        background: G.surface,
+        border: `1px solid ${hov ? G.blueBorder : G.border}`,
+        borderRadius: 16,
+        padding: "20px 22px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        transition: "border-color 0.22s ease, box-shadow 0.22s ease",
+        boxShadow: hov ? "0 12px 40px rgba(0,0,0,0.5)" : "0 4px 16px rgba(0,0,0,0.3)",
+        animation: `fadeSlideUp 0.65s ${delay}s ease both`,
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+        <div>
+          <div style={{ fontFamily: font.sora, fontSize: 15, fontWeight: 600, marginBottom: 3 }}>
+            {p.title}
+          </div>
+          <div style={{ fontSize: 12, color: G.text2 }}>
+            <span style={{ color: G.text3 }}>Client: </span>{p.client}
+          </div>
+        </div>
+        <Badge color="green">Open</Badge>
+      </div>
+
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+        gap: 12,
+        background: G.surface2,
+        border: `1px solid ${G.border}`,
+        borderRadius: 10,
+        padding: "12px 14px",
+      }}>
+        <div>
+          <div style={{ fontSize: 10.5, color: G.text3, textTransform: "uppercase", marginBottom: 3 }}>Budget</div>
+          <div style={{ fontFamily: font.sora, fontWeight: 700 }}>{p.budget}</div>
+        </div>
+        <div>
+          <div style={{ fontSize: 10.5, color: G.text3, textTransform: "uppercase", marginBottom: 3 }}>Duration</div>
+          <div style={{ fontFamily: font.sora, fontWeight: 700 }}>{p.duration}</div>
+        </div>
+      </div>
+
+      <div style={{ fontSize: 12, color: G.text2 }}>{p.skills}</div>
+
+      <button style={{
+        alignSelf: "flex-start",
+        padding: "8px 14px",
+        borderRadius: 8,
+        border: `1px solid ${G.blueBorder}`,
+        color: G.blue,
+        fontSize: 12,
+        fontWeight: 600,
+      }}>
+        Apply Now
+      </button>
     </div>
   );
 }
@@ -420,7 +535,7 @@ function MilestoneRow({ m, idx }) {
 
 /* ── Main Dashboard ── */
 export default function FreelancerDashboard({ name = "Freelancer" }) {
-  const [activeNav, setActiveNav] = useState(0);
+  const [activeNav, setActiveNav] = useState("mywork");
   const [notifHov, setNotifHov] = useState(false);
   const [searchVal, setSearchVal] = useState("");
   const firstName = name.trim().split(/\s+/)[0] || "Freelancer";
@@ -431,6 +546,13 @@ export default function FreelancerDashboard({ name = "Freelancer" }) {
     .slice(0, 2)
     .map(part => part[0]?.toUpperCase())
     .join("") || "F";
+  const normalizedSearch = searchVal.trim().toLowerCase();
+  const filteredExploreProjects = EXPLORE_PROJECTS.filter((p) =>
+    [p.title, p.client, p.skills].some((value) => value.toLowerCase().includes(normalizedSearch))
+  );
+  const filteredMyWorkProjects = MY_WORK_PROJECTS.filter((p) =>
+    [p.title, p.client, p.milestone, p.status].some((value) => value.toLowerCase().includes(normalizedSearch))
+  );
 
   return (
     <>
@@ -488,19 +610,19 @@ export default function FreelancerDashboard({ name = "Freelancer" }) {
           </div>
 
           {/* Nav */}
-          {NAV.map((n, i) => (
+          {NAV.map((n) => (
             <button
               key={n.label}
               className="nav-item"
-              onClick={() => setActiveNav(i)}
+              onClick={() => n.id && setActiveNav(n.id)}
               style={{
                 display: "flex", alignItems: "center", gap: 10,
                 padding: "10px 12px", borderRadius: 10, border: "none",
-                background: activeNav === i ? G.blueGlow : "transparent",
-                color: activeNav === i ? G.blue : G.text2,
-                fontFamily: font.dm, fontSize: 13.5, fontWeight: activeNav === i ? 600 : 400,
+                background: activeNav === n.id ? G.blueGlow : "transparent",
+                color: activeNav === n.id ? G.blue : G.text2,
+                fontFamily: font.dm, fontSize: 13.5, fontWeight: activeNav === n.id ? 600 : 400,
                 cursor: "pointer", textAlign: "left",
-                borderLeft: activeNav === i ? `2px solid ${G.blue}` : "2px solid transparent",
+                borderLeft: activeNav === n.id ? `2px solid ${G.blue}` : "2px solid transparent",
               }}
             >
               {n.icon} {n.label}
@@ -565,7 +687,7 @@ export default function FreelancerDashboard({ name = "Freelancer" }) {
                   <input
                     value={searchVal}
                     onChange={e => setSearchVal(e.target.value)}
-                    placeholder="Search projects…"
+                  placeholder={activeNav === "explore" ? "Search available projects…" : "Search my work…"}
                     style={{
                       background: "none", border: "none", outline: "none",
                       color: G.text1, fontFamily: font.dm, fontSize: 13,
@@ -605,7 +727,7 @@ export default function FreelancerDashboard({ name = "Freelancer" }) {
             }}>
               <StatCard icon={Icon.wallet} label="Total Escrow" value="₹12,03,500" sub="Across 3 projects" color="blue" delay={0.05} />
               <StatCard icon={Icon.trending} label="Yield Earned" value="₹5,270.50" sub="This month · DeFi optimized" color="green" delay={0.12} />
-              <StatCard icon={Icon.briefcase} label="Active Jobs" value="3" sub="2 on-track · 1 in review" color="blue" delay={0.19} />
+              <StatCard icon={Icon.briefcase} label="Active Jobs" value="3" sub="2 ongoing · 1 in review" color="blue" delay={0.19} />
               <StatCard icon={Icon.award} label="Reputation" value="4.92★" sub="47 completed contracts" color="amber" delay={0.26} />
             </div>
 
@@ -643,19 +765,23 @@ export default function FreelancerDashboard({ name = "Freelancer" }) {
                   <h2 style={{
                     fontFamily: font.sora, fontSize: 16, fontWeight: 700,
                     letterSpacing: "-0.025em", color: G.text1,
-                  }}>Active Contracts</h2>
+                  }}>{activeNav === "explore" ? "Explore Projects" : "My Work"}</h2>
                   <button style={{
                     fontSize: 12, color: G.blue, background: "none", border: "none",
                     fontFamily: font.dm, cursor: "pointer", display: "flex",
                     alignItems: "center", gap: 4, fontWeight: 500,
                   }}>
-                    View all {Icon.arrow}
+                    {activeNav === "explore" ? `${filteredExploreProjects.length} available` : `${filteredMyWorkProjects.length} projects`} {Icon.arrow}
                   </button>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                  {PROJECTS.map((p, i) => (
-                    <ProjectCard key={p.id} p={p} delay={0.4 + i * 0.1} />
-                  ))}
+                  {activeNav === "explore"
+                    ? filteredExploreProjects.map((p, i) => (
+                        <ExploreProjectCard key={p.id} p={p} delay={0.4 + i * 0.1} />
+                      ))
+                    : filteredMyWorkProjects.map((p, i) => (
+                        <ProjectCard key={p.id} p={p} delay={0.4 + i * 0.1} />
+                      ))}
                 </div>
               </div>
 
