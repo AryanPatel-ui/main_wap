@@ -86,7 +86,7 @@ const CARDS = [
     iconClass: 'sr-fi--blue',
     Icon: ShieldCheckIcon,
     label: 'Payment Locked',
-    amount: '$12,500.00',
+    amount: '₹10,37,500',
     detail: 'Escrow Active · Contract #4821',
     badge: 'Active',
     badgeClass: 'sr-badge--blue',
@@ -110,7 +110,7 @@ const CARDS = [
     iconClass: 'sr-fi--blue',
     Icon: ArrowUpIcon,
     label: 'Funds Released',
-    amount: '$3,200.00',
+    amount: '₹2,65,600',
     detail: 'To: alex@studio.io',
     badge: 'Sent',
     badgeClass: 'sr-badge--green',
@@ -130,16 +130,21 @@ const CARDS = [
 ];
 
 /* ─── Main Component ─── */
-export default function SignIn() {
+export default function SignIn({ onSignIn }) {
+  const [name, setName]         = useState('');
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole]         = useState('freelancer');
   const [showPw, setShowPw]     = useState(false);
   const [loading, setLoading]   = useState(false);
 
   const handleSignIn = () => {
     if (loading) return;
     setLoading(true);
-    setTimeout(() => setLoading(false), 2200);
+    setTimeout(() => {
+      setLoading(false);
+      onSignIn?.({ role, name: name.trim() || 'User' });
+    }, 900);
   };
 
   return (
@@ -248,6 +253,47 @@ export default function SignIn() {
 
           {/* Form fields */}
           <div className="sr-form-stack">
+
+            {/* Account type */}
+            <div className="sr-field-group">
+              <span className="sr-field-label">Sign in as</span>
+              <div className="sr-role-switch" role="radiogroup" aria-label="Choose account type">
+                <button
+                  type="button"
+                  className={`sr-role-option${role === 'freelancer' ? ' sr-role-option--active' : ''}`}
+                  onClick={() => setRole('freelancer')}
+                  aria-pressed={role === 'freelancer'}
+                >
+                  Freelancer
+                </button>
+                <button
+                  type="button"
+                  className={`sr-role-option${role === 'client' ? ' sr-role-option--active' : ''}`}
+                  onClick={() => setRole('client')}
+                  aria-pressed={role === 'client'}
+                >
+                  Client
+                </button>
+              </div>
+            </div>
+
+            {/* Name */}
+            <div className="sr-field-group">
+              <label className="sr-field-label" htmlFor="name">
+                Your name
+              </label>
+              <div className="sr-input-shell">
+                <input
+                  id="name"
+                  className="sr-input"
+                  type="text"
+                  placeholder="Aryan"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  autoComplete="name"
+                />
+              </div>
+            </div>
 
             {/* Email */}
             <div className="sr-field-group">
