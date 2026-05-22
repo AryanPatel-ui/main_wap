@@ -4,7 +4,6 @@
   position: relative;
   background: var(--bg);
   color: var(--text-1);
-  overflow: hidden;
 }
 
 .cd-bg {

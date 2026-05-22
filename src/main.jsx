@@ -8,11 +8,11 @@ export function App() {
   const [session, setSession] = useState(null)
 
   if (session?.role === 'freelancer') {
-    return <FreelancerDashboard name={session.name} />
+    return <FreelancerDashboard name={session.name} onSignOut={() => setSession(null)} />
   }
 
   if (session?.role === 'client') {
-    return <ClientDashboard name={session.name} />
+    return <ClientDashboard name={session.name} onSignOut={() => setSession(null)} />
   }
 
   return <SignIn onSignIn={setSession} />

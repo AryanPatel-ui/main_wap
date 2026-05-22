@@ -74,11 +74,12 @@ const NAV_ITEMS = [
 ];
 
 /* ── Root Component ─────────────────────────────────────────── */
-export default function ClientDashboard({ name = "Client" }) {
+export default function ClientDashboard({ name = "Client", onSignOut }) {
   const [activeNav, setActiveNav]       = useState("dashboard");
   const [activeFilter, setActiveFilter] = useState("All");
   const [expandedId, setExpandedId]     = useState(null);
   const [showModal, setShowModal]       = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const filters = ["All", "In Progress", "Under Review", "Pending Start", "Completed"];
 
@@ -151,13 +152,39 @@ export default function ClientDashboard({ name = "Client" }) {
           </div>
 
           {/* User */}
-          <div className="cd-sidebar-user">
+          <div className="cd-sidebar-user" style={{ position: "relative" }}>
             <div className="cd-user-avatar">{initials}</div>
             <div className="cd-user-info">
               <span className="cd-user-name">{name}</span>
               <span className="cd-user-role">Client Account</span>
             </div>
-            <button className="cd-user-more"><DotsIcon /></button>
+            <button 
+              className="cd-user-more" 
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex' }}
+            >
+              <DotsIcon />
+            </button>
+            
+            {showUserMenu && (
+              <div style={{
+                position: 'absolute', bottom: '100%', right: 0, marginBottom: 8,
+                background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8,
+                padding: 4, width: 140, boxShadow: '0 4px 12px rgba(0,0,0,0.2)', zIndex: 10
+              }}>
+                <button
+                  onClick={onSignOut}
+                  style={{
+                    width: '100%', padding: '8px 12px', textAlign: 'left', background: 'transparent',
+                    border: 'none', color: '#ff6b6b', fontSize: 13, cursor: 'pointer', borderRadius: 6
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,107,107,0.1)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </aside>

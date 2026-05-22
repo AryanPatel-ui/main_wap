@@ -123,6 +123,13 @@ const Icon = {
       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
     </svg>
   ),
+  dots: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="12" cy="5" r="1"/>
+      <circle cx="12" cy="12" r="1"/>
+      <circle cx="12" cy="19" r="1"/>
+    </svg>
+  ),
 };
 
 /* ── Data ── */
@@ -534,10 +541,11 @@ function MilestoneRow({ m, idx }) {
 }
 
 /* ── Main Dashboard ── */
-export default function FreelancerDashboard({ name = "Freelancer" }) {
+export default function FreelancerDashboard({ name = "Freelancer", onSignOut }) {
   const [activeNav, setActiveNav] = useState("mywork");
   const [notifHov, setNotifHov] = useState(false);
   const [searchVal, setSearchVal] = useState("");
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const firstName = name.trim().split(/\s+/)[0] || "Freelancer";
   const initials = name
     .trim()
@@ -558,7 +566,7 @@ export default function FreelancerDashboard({ name = "Freelancer" }) {
     <>
       <div style={{
         display: "flex", minHeight: "100vh", fontFamily: font.dm,
-        background: G.bg, color: G.text1, overflowX: "hidden",
+        background: G.bg, color: G.text1,
       }}>
         {/* ── Sidebar ── */}
         <aside className="fd-sidebar" style={{
@@ -589,25 +597,7 @@ export default function FreelancerDashboard({ name = "Freelancer" }) {
             </span>
           </div>
 
-          {/* User pill */}
-          <div style={{
-            display: "flex", alignItems: "center", gap: 10,
-            background: G.surface2, borderRadius: 10, padding: "10px 12px",
-            border: `1px solid ${G.border}`, marginBottom: 20,
-          }}>
-            <div style={{
-              width: 32, height: 32, borderRadius: "50%",
-              background: `linear-gradient(135deg, ${G.blue}, #93B4FF)`,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 13, fontWeight: 700, color: "#fff", flexShrink: 0,
-            }}>{initials}</div>
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 600, color: G.text1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {name}
-              </div>
-              <div style={{ fontSize: 10.5, color: G.text3 }}>Freelancer</div>
-            </div>
-          </div>
+          {/* User pill was here */}
 
           {/* Nav */}
           {NAV.map((n) => (
@@ -647,6 +637,52 @@ export default function FreelancerDashboard({ name = "Freelancer" }) {
               <div style={{ fontSize: 11, color: G.text3, lineHeight: 1.5 }}>
                 All funds secured & yielding
               </div>
+            </div>
+
+            {/* User pill */}
+            <div style={{
+              display: "flex", alignItems: "center", gap: 10,
+              background: G.surface2, borderRadius: 10, padding: "10px 12px",
+              border: `1px solid ${G.border}`, marginTop: 16, position: 'relative'
+            }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: "50%",
+                background: `linear-gradient(135deg, ${G.blue}, #93B4FF)`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 13, fontWeight: 700, color: "#fff", flexShrink: 0,
+              }}>{initials}</div>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontSize: 12.5, fontWeight: 600, color: G.text1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {name}
+                </div>
+                <div style={{ fontSize: 10.5, color: G.text3 }}>Freelancer</div>
+              </div>
+              <button 
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', color: G.text2 }}
+              >
+                {Icon.dots}
+              </button>
+              
+              {showUserMenu && (
+                <div style={{
+                  position: 'absolute', bottom: '100%', right: 0, marginBottom: 8,
+                  background: G.surface, border: `1px solid ${G.border}`, borderRadius: 8,
+                  padding: 4, width: 140, boxShadow: '0 4px 12px rgba(0,0,0,0.2)', zIndex: 10
+                }}>
+                  <button
+                    onClick={onSignOut}
+                    style={{
+                      width: '100%', padding: '8px 12px', textAlign: 'left', background: 'transparent',
+                      border: 'none', color: G.red, fontSize: 13, cursor: 'pointer', borderRadius: 6
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = G.redGlow}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </aside>
