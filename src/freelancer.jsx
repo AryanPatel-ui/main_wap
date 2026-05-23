@@ -593,7 +593,7 @@ export default function FreelancerDashboard({ name = "Freelancer", onSignOut }) 
               fontFamily: font.sora, fontSize: 16, fontWeight: 700,
               letterSpacing: "-0.025em", color: G.text1,
             }}>
-              Trust<span style={{ color: G.blue }}>.</span>work
+              Escrow<span style={{ color: G.blue }}> Admin</span>
             </span>
           </div>
 
@@ -810,7 +810,7 @@ export default function FreelancerDashboard({ name = "Freelancer", onSignOut }) 
                     {activeNav === "explore" ? `${filteredExploreProjects.length} available` : `${filteredMyWorkProjects.length} projects`} {Icon.arrow}
                   </button>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 14, maxHeight: "calc(100vh - 250px)", overflowY: "auto", paddingRight: 8 }}>
                   {activeNav === "explore"
                     ? filteredExploreProjects.map((p, i) => (
                         <ExploreProjectCard key={p.id} p={p} delay={0.4 + i * 0.1} />
@@ -840,50 +840,7 @@ export default function FreelancerDashboard({ name = "Freelancer", onSignOut }) 
                   </div>
                 </div>
 
-                {/* Payout card */}
-                <div style={{
-                  background: G.surface, borderRadius: 16, padding: "20px",
-                  border: `1px solid ${G.greenBorder}`,
-                  animation: "fadeSlideUp 0.65s 0.5s ease both",
-                  boxShadow: `0 0 28px rgba(79,175,143,0.08)`,
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-                    <div style={{
-                      width: 28, height: 28, borderRadius: 6,
-                      background: G.greenGlow, border: `1px solid ${G.greenBorder}`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      color: G.green,
-                    }}>
-                      {Icon.dollar}
-                    </div>
-                    <span style={{ fontFamily: font.sora, fontSize: 14, fontWeight: 700, color: G.text1 }}>
-                      Next Payout
-                    </span>
-                  </div>
 
-                  <div style={{ fontFamily: font.sora, fontSize: 28, fontWeight: 800, color: G.green, letterSpacing: "-0.035em", marginBottom: 4 }}>
-                    ₹1,49,400
-                  </div>
-                  <div style={{ fontSize: 12, color: G.text2, marginBottom: 16 }}>
-                    Brand Identity Kit · Final delivery
-                  </div>
-
-                  <ProgressBar value={90} color={G.green} />
-                  <div style={{ fontSize: 11, color: G.text3, marginTop: 6 }}>
-                    90% complete · Est. release May 30
-                  </div>
-
-                  <div style={{
-                    marginTop: 16, padding: "10px 12px",
-                    background: G.surface2, borderRadius: 8, border: `1px solid ${G.border}`,
-                    display: "flex", alignItems: "center", gap: 6,
-                  }}>
-                    <span style={{ color: G.green, flexShrink: 0 }}>{Icon.lock}</span>
-                    <span style={{ fontSize: 11, color: G.text2 }}>
-                      Funds held in non-custodial escrow · auto-released on approval
-                    </span>
-                  </div>
-                </div>
               </div>
             </div>
 

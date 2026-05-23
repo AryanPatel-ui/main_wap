@@ -164,7 +164,7 @@ export default function SignIn({ onSignIn }) {
           {/* Brand */}
           <div className="sr-brand">
             <LogoMark size={30} />
-            <span className="sr-brand-name">Vaultly<span className="sr-brand-dot">.</span></span>
+            <span className="sr-brand-name">Escrow Admin<span className="sr-brand-dot">.</span></span>
           </div>
 
           {/* Live badge */}
@@ -242,7 +242,7 @@ export default function SignIn({ onSignIn }) {
           {/* Logo */}
           <div className="sr-card-logo">
             <LogoMark size={34} />
-            <span className="sr-card-brandname">Vaultly</span>
+            <span className="sr-card-brandname">Escrow Admin</span>
           </div>
 
           {/* Header */}

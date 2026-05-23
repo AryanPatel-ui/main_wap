@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./ClientDashboard.css";
 
 /* ── Mock Data ─────────────────────────────────────────────── */
-const PROJECTS = [
+const INITIAL_PROJECTS = [
   {
     id: 1,
     title: "Brand Identity Redesign",
@@ -81,15 +81,17 @@ export default function ClientDashboard({ name = "Client", onSignOut }) {
   const [showModal, setShowModal]       = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
+  const [projects, setProjects]         = useState(INITIAL_PROJECTS);
+
   const filters = ["All", "In Progress", "Under Review", "Pending Start", "Completed"];
 
   const filtered = activeFilter === "All"
-    ? PROJECTS
-    : PROJECTS.filter(p => p.status === activeFilter);
+    ? projects
+    : projects.filter(p => p.status === activeFilter);
 
   const totalEscrowed  = "₹9,75,250";
   const totalYield     = "₹14,541.60";
-  const activeProjects = PROJECTS.filter(p => p.status !== "Completed").length;
+  const activeProjects = projects.filter(p => p.status !== "Completed").length;
   const firstName = name.trim().split(/\s+/)[0] || "Client";
   const initials = name
     .trim()
@@ -119,7 +121,7 @@ export default function ClientDashboard({ name = "Client", onSignOut }) {
               <ShieldIcon />
             </div>
             <span className="cd-logo-text">
-              Trust<span className="cd-logo-accent">Lock</span>
+              Escrow<span className="cd-logo-accent"> Admin</span>
             </span>
           </div>
 
@@ -210,90 +212,143 @@ export default function ClientDashboard({ name = "Client", onSignOut }) {
           </div>
         </header>
 
-        {/* ── Stat Cards ── */}
-        <section className="cd-stats">
-          <StatCard
-            icon={<VaultIcon />}
-            iconCls="cd-sci--blue"
-            label="Total Escrowed"
-            value={totalEscrowed}
-            sub="Across 4 contracts"
-            trend="+₹74,700 this month"
-            trendUp
-          />
-          <StatCard
-            icon={<YieldIcon />}
-            iconCls="cd-sci--green"
-            label="Yield Generated"
-            value={totalYield}
-            sub="On idle escrow funds"
-            trend="+₹2,722.40 this week"
-            trendUp
-          />
-          <StatCard
-            icon={<BriefcaseIcon />}
-            iconCls="cd-sci--blue"
-            label="Active Projects"
-            value={activeProjects}
-            sub="1 awaiting your review"
-            trend="2 milestones due soon"
-          />
-          <StatCard
-            icon={<ShieldIcon />}
-            iconCls="cd-sci--green"
-            label="Trust Score"
-            value="98%"
-            sub="Based on 14 contracts"
-            trend="Top 5% of clients"
-            trendUp
-          />
-        </section>
-
-        {/* ── Projects Panel ── */}
-        <section className="cd-panel">
-
-          <div className="cd-panel-head">
-            <div>
-              <h2 className="cd-panel-title">Active Contracts</h2>
-              <p className="cd-panel-sub">Manage milestones, escrow releases &amp; disputes</p>
-            </div>
-            <div className="cd-filter-row">
-              {filters.map(f => (
-                <button
-                  key={f}
-                  className={`cd-filter-btn${activeFilter === f ? " cd-filter-btn--active" : ""}`}
-                  onClick={() => setActiveFilter(f)}
-                >
-                  {f}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="cd-project-list">
-            {filtered.map(proj => (
-              <ProjectCard
-                key={proj.id}
-                project={proj}
-                expanded={expandedId === proj.id}
-                onToggle={() => setExpandedId(expandedId === proj.id ? null : proj.id)}
+        {activeNav === "dashboard" && (
+          <>
+            {/* ── Stat Cards ── */}
+            <section className="cd-stats">
+              <StatCard
+                icon={<VaultIcon />}
+                iconCls="cd-sci--blue"
+                label="Total Escrowed"
+                value={totalEscrowed}
+                sub="Across 4 contracts"
+                trend="+₹74,700 this month"
+                trendUp
               />
-            ))}
-            {filtered.length === 0 && (
-              <div className="cd-empty">No contracts match this filter.</div>
-            )}
-          </div>
-        </section>
+              <StatCard
+                icon={<YieldIcon />}
+                iconCls="cd-sci--green"
+                label="Yield Generated"
+                value={totalYield}
+                sub="On idle escrow funds"
+                trend="+₹2,722.40 this week"
+                trendUp
+              />
+              <StatCard
+                icon={<BriefcaseIcon />}
+                iconCls="cd-sci--blue"
+                label="Active Projects"
+                value={activeProjects}
+                sub="1 awaiting your review"
+                trend="2 milestones due soon"
+              />
+              <StatCard
+                icon={<ShieldIcon />}
+                iconCls="cd-sci--green"
+                label="Trust Score"
+                value="98%"
+                sub="Based on 14 contracts"
+                trend="Top 5% of clients"
+                trendUp
+              />
+            </section>
 
-        {/* ── Bottom Grid ── */}
-        <div className="cd-bottom-grid">
-          <RecentActivity />
-          <EscrowBreakdown projects={PROJECTS} />
-        </div>
+            {/* ── Projects Panel ── */}
+            <section className="cd-panel">
+              <div className="cd-panel-head">
+                <div>
+                  <h2 className="cd-panel-title">Active Contracts</h2>
+                  <p className="cd-panel-sub">Manage milestones, escrow releases &amp; disputes</p>
+                </div>
+                <div className="cd-filter-row">
+                  {filters.map(f => (
+                    <button
+                      key={f}
+                      className={`cd-filter-btn${activeFilter === f ? " cd-filter-btn--active" : ""}`}
+                      onClick={() => setActiveFilter(f)}
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="cd-project-list">
+                {filtered.slice(0, 3).map(proj => (
+                  <ProjectCard
+                    key={proj.id}
+                    project={proj}
+                    expanded={expandedId === proj.id}
+                    onToggle={() => setExpandedId(expandedId === proj.id ? null : proj.id)}
+                  />
+                ))}
+                {filtered.length === 0 && (
+                  <div className="cd-empty">No contracts match this filter.</div>
+                )}
+                {filtered.length > 3 && (
+                  <button className="cd-action-btn cd-action-btn--outline" style={{width: "100%", marginTop: 12}} onClick={() => setActiveNav("projects")}>
+                    View all {filtered.length} projects
+                  </button>
+                )}
+              </div>
+            </section>
+
+            {/* ── Bottom Grid ── */}
+            <div className="cd-bottom-grid">
+              <RecentActivity />
+              <EscrowBreakdown projects={projects} />
+            </div>
+          </>
+        )}
+
+        {activeNav === "projects" && (
+          <section className="cd-panel" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+            <div className="cd-panel-head">
+              <div>
+                <h2 className="cd-panel-title">All Projects</h2>
+                <p className="cd-panel-sub">Manage all your projects and contracts</p>
+              </div>
+              <div className="cd-filter-row">
+                {filters.map(f => (
+                  <button
+                    key={f}
+                    className={`cd-filter-btn${activeFilter === f ? " cd-filter-btn--active" : ""}`}
+                    onClick={() => setActiveFilter(f)}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="cd-project-list" style={{ overflowY: "auto", flex: 1 }}>
+              {filtered.map(proj => (
+                <ProjectCard
+                  key={proj.id}
+                  project={proj}
+                  expanded={expandedId === proj.id}
+                  onToggle={() => setExpandedId(expandedId === proj.id ? null : proj.id)}
+                />
+              ))}
+              {filtered.length === 0 && (
+                <div className="cd-empty">No contracts match this filter.</div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {activeNav !== "dashboard" && activeNav !== "projects" && (
+          <div className="cd-empty" style={{ marginTop: 40 }}>
+            <h2 style={{ fontSize: 24, marginBottom: 8, color: "var(--text-1)" }}>{NAV_ITEMS.find(n => n.id === activeNav)?.label}</h2>
+            <p>This section is under construction.</p>
+          </div>
+        )}
       </main>
 
       {/* ── New Project Modal ── */}
-      {showModal && <NewProjectModal onClose={() => setShowModal(false)} />}
+      {showModal && <NewProjectModal onClose={() => setShowModal(false)} onAddProject={(newProject) => {
+        setProjects(prev => [newProject, ...prev]);
+      }} />}
     </div>
   );
 }
@@ -475,8 +530,40 @@ function EscrowBreakdown({ projects }) {
 }
 
 /* ── New Project Modal ──────────────────────────────────────── */
-function NewProjectModal({ onClose }) {
+function NewProjectModal({ onClose, onAddProject }) {
   const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    title: "",
+    freelancer: "",
+    description: "",
+    due: "",
+    budget: "",
+    escrowed: "",
+    milestone: ""
+  });
+
+  const handleChange = (e) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleCreate = () => {
+    const newProject = {
+      id: Date.now(),
+      title: formData.title || "New Contract",
+      freelancer: formData.freelancer || "Unknown",
+      avatar: (formData.freelancer || "U").substring(0, 2).toUpperCase(),
+      budget: formData.budget ? `₹${formData.budget}` : "₹0",
+      escrowed: formData.escrowed ? `₹${formData.escrowed}` : "₹0",
+      due: formData.due || "TBD",
+      status: "Pending Start",
+      milestone: formData.milestone || "Initial Setup",
+      progress: 0,
+      yieldEarned: "₹0",
+    };
+    onAddProject?.(newProject);
+    onClose();
+  };
+
   return (
     <div className="cd-modal-overlay" onClick={onClose}>
       <div className="cd-modal" onClick={e => e.stopPropagation()}>
@@ -501,19 +588,19 @@ function NewProjectModal({ onClose }) {
           <div className="cd-modal-body">
             <div className="sr-field-group">
               <label className="sr-field-label">Project Title</label>
-              <input className="sr-input" placeholder="e.g. Mobile App Redesign" />
+              <input className="sr-input" name="title" value={formData.title} onChange={handleChange} placeholder="e.g. Mobile App Redesign" />
             </div>
             <div className="sr-field-group">
-              <label className="sr-field-label">Freelancer Email</label>
-              <input className="sr-input" placeholder="freelancer@example.com" />
+              <label className="sr-field-label">Freelancer Name or Email</label>
+              <input className="sr-input" name="freelancer" value={formData.freelancer} onChange={handleChange} placeholder="freelancer@example.com" />
             </div>
             <div className="sr-field-group">
               <label className="sr-field-label">Project Description</label>
-              <textarea className="sr-input cd-textarea" placeholder="Describe the scope of work..." />
+              <textarea className="sr-input cd-textarea" name="description" value={formData.description} onChange={handleChange} placeholder="Describe the scope of work..." />
             </div>
             <div className="sr-field-group">
               <label className="sr-field-label">Deadline</label>
-              <input className="sr-input" type="date" />
+              <input className="sr-input" name="due" value={formData.due} onChange={handleChange} type="date" />
             </div>
           </div>
         )}
@@ -522,11 +609,11 @@ function NewProjectModal({ onClose }) {
           <div className="cd-modal-body">
             <div className="sr-field-group">
               <label className="sr-field-label">Total Budget (INR)</label>
-              <input className="sr-input" placeholder="₹0.00" />
+              <input className="sr-input" name="budget" value={formData.budget} onChange={handleChange} placeholder="0.00" />
             </div>
             <div className="sr-field-group">
-              <label className="sr-field-label">Initial Escrow Deposit</label>
-              <input className="sr-input" placeholder="₹0.00" />
+              <label className="sr-field-label">Initial Escrow Deposit (INR)</label>
+              <input className="sr-input" name="escrowed" value={formData.escrowed} onChange={handleChange} placeholder="0.00" />
             </div>
             <div className="cd-yield-notice">
               <YieldIcon />
@@ -534,7 +621,7 @@ function NewProjectModal({ onClose }) {
             </div>
             <div className="sr-field-group">
               <label className="sr-field-label">Milestone Name</label>
-              <input className="sr-input" placeholder="e.g. Initial Wireframes" />
+              <input className="sr-input" name="milestone" value={formData.milestone} onChange={handleChange} placeholder="e.g. Initial Wireframes" />
             </div>
           </div>
         )}
@@ -542,14 +629,14 @@ function NewProjectModal({ onClose }) {
         {step === 3 && (
           <div className="cd-modal-body">
             <div className="cd-confirm-block">
-              <div className="cd-confirm-row"><span>Project</span><strong>Mobile App Redesign</strong></div>
-              <div className="cd-confirm-row"><span>Budget</span><strong>₹3,32,000</strong></div>
-              <div className="cd-confirm-row"><span>Escrow Deposit</span><strong>₹1,66,000</strong></div>
-              <div className="cd-confirm-row"><span>Milestone</span><strong>Initial Wireframes</strong></div>
+              <div className="cd-confirm-row"><span>Project</span><strong>{formData.title || "New Contract"}</strong></div>
+              <div className="cd-confirm-row"><span>Budget</span><strong>₹{formData.budget || "0"}</strong></div>
+              <div className="cd-confirm-row"><span>Escrow Deposit</span><strong>₹{formData.escrowed || "0"}</strong></div>
+              <div className="cd-confirm-row"><span>Milestone</span><strong>{formData.milestone || "Initial Setup"}</strong></div>
             </div>
             <div className="cd-yield-notice">
               <ShieldIcon />
-              <p>By creating this contract, funds will be locked in escrow and both parties are protected by TrustLock's dispute resolution policy.</p>
+              <p>By creating this contract, funds will be locked in escrow and both parties are protected by Escrow Admin's dispute resolution policy.</p>
             </div>
           </div>
         )}
@@ -562,7 +649,7 @@ function NewProjectModal({ onClose }) {
           )}
           {step < 3
             ? <button className="sr-cta-btn" style={{width:"auto",padding:"0 28px"}} onClick={() => setStep(s => s + 1)}>Continue</button>
-            : <button className="sr-cta-btn" style={{width:"auto",padding:"0 28px"}} onClick={onClose}><CheckIcon /> Create Contract</button>
+            : <button className="sr-cta-btn" style={{width:"auto",padding:"0 28px"}} onClick={handleCreate}><CheckIcon /> Create Contract</button>
           }
         </div>
       </div>
